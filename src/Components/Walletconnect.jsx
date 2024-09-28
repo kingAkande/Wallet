@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import detectEthereumProvider from "@metamask/detect-provider";
-import { ethers } from "ethers";
+
 
 const WalletConnection = () => {
     
