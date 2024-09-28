@@ -89,25 +89,19 @@ const WalletConnection = () => {
     }
   };
 
-  //Optionally, fetch balance
 
-  // const getBalance = async () => {
-  //   const accounts = await window.ethereum.request({ method: "eth_accounts" });
-  //   const balance = await window.ethereum.request({
-  //     method: "eth_getBalance",
-  //     params: [accounts[0], "latest"],
-  //   });
-  //   const balanceInEth = parseFloat(balance) / 10 ** 18; // Manual conversion from Wei to Ether
-  //   setBalance(balanceInEth);
-  // };
-  
+
   const getBalance = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const accounts = await provider.listAccounts();
-    const balance = await provider.getBalance(accounts[0]);
-    const balanceInEth = ethers.utils.formatEther(balance); // Converts Wei to Ether using ethers.js
+    const accounts = await window.ethereum.request({ method: "eth_accounts" });
+    const balance = await window.ethereum.request({
+      method: "eth_getBalance",
+      params: [accounts[0], "latest"],
+    });
+    const balanceInEth = parseFloat(balance) / 10 ** 18; // Manual conversion from Wei to Ether
     setBalance(balanceInEth);
   };
+  
+  
   
 
   return (
