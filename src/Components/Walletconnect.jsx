@@ -105,7 +105,7 @@ const WalletConnection = () => {
   
 
   return (
-    <div>
+    <div className='w-125  mx-auto '>
       <button className="enableEthereumButton" onClick={getAccount}>
         Connect to MetaMask
       </button>
