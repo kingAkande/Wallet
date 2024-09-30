@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import detectEthereumProvider from "@metamask/detect-provider";
 
+export const WalletContext = createContext();
 
-const WalletConnection = () => {
-    
+export const WalletProvider = ({ children }) => {
   const [account, setAccount] = useState("");
   const [chainId, setChainId] = useState("");
-  const [balance, setBalance] = useState(""); // If you want to fetch balance later
-  
+  const [balance, setBalance] = useState("");
+
   // Detect Ethereum provider (MetaMask)
   useEffect(() => {
     const initialize = async () => {
@@ -29,6 +29,7 @@ const WalletConnection = () => {
     }
   };
 
+  // Fetch chain ID and listen for chain changes
   useEffect(() => {
     const fetchChainId = async () => {
       const chainId = await window.ethereum.request({ method: "eth_chainId" });
@@ -49,9 +50,13 @@ const WalletConnection = () => {
 
   const getAccount = async () => {
     try {
-      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
       setAccount(accounts[0]);
-      const chainId = await window.ethereum.request({ method: "eth_chainId" });
+      const chainId = await window.ethereum.request({
+        method: "eth_chainId",
+      });
       setChainId(parseInt(chainId, 16));
     } catch (err) {
       if (err.code === 4001) {
@@ -89,40 +94,23 @@ const WalletConnection = () => {
     }
   };
 
-
-
   const getBalance = async () => {
-    const accounts = await window.ethereum.request({ method: "eth_accounts" });
+    const accounts = await window.ethereum.request({
+      method: "eth_accounts",
+    });
     const balance = await window.ethereum.request({
       method: "eth_getBalance",
       params: [accounts[0], "latest"],
     });
-    const balanceInEth = parseFloat(balance) / 10 ** 18; // Manual conversion from Wei to Ether
+    const balanceInEth = parseFloat(balance) / 10 ** 18; // Convert Wei to Ether
     setBalance(balanceInEth);
   };
-  
-  
-  
 
   return (
-    <div className='w-125  mx-auto '>
-      <button className="enableEthereumButton" onClick={getAccount}>
-        Connect to MetaMask
-      </button>
-      <button className="enableChangeEthereumButton" onClick={changeNetwork}>
-        Switch to Sepolia Network
-      </button>
-
-      {/* <button className="enableEthereumBalance" onClick={ getBalance}>
-        {/* Get Balance
-      </button> */} 
-
-      <div className="showAccount">Account: {account}</div>
-      <div className="showChainId">Chain ID: {chainId}</div>
-      <div className="showBalance">Balance: {balance}</div>
-
-    </div>
+    <WalletContext.Provider
+      value={{ account, chainId, balance, getAccount, changeNetwork, getBalance }}
+    >
+      {children}
+    </WalletContext.Provider>
   );
 };
-
-export default WalletConnection;

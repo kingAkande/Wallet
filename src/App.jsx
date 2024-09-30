@@ -1,19 +1,16 @@
-import WalletConnection from "./Components/Walletconnect"
+import React from "react";
+import { WalletProvider } from './Components/WalletContext';
+import WalletConnection from "./Components/WalletConnection";
 
-
-
-function App() {
-
-  
+const App = () => {
 
   return (
-    <>
-    
 
-      < WalletConnection/>
+    <WalletProvider>
+      <WalletConnection/>
+    </WalletProvider>
 
-    </>
-  )
-}
+  );
+};
 
-export default App
+export default App;
